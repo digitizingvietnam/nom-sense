@@ -16,6 +16,7 @@ dist/
 
 
 Word/
+DEPLOYMENT.md
 
 # Jupyter and notebook temp files
 .ipynb_checkpoints/
