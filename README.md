@@ -1,11 +1,3 @@
----
-title: Nom-sense
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-pinned: false
----
-
 # Nom-sense
 
 ## Overview
