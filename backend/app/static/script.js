@@ -54,12 +54,12 @@ async function handleSubmit() {
     selectedSource = data.sources?.[0] ?? null;
 
     displayAnswer(data);
-    
+
     // Highlight answer card
     answerCard.classList.add("answer-card--highlight");
     // Scroll to answer
     setTimeout(() => {
-        answerCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      answerCard.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
 
   } catch (err) {
@@ -124,11 +124,12 @@ function renderCitations(sources) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "citation-toggle";
+    button.setAttribute("aria-expanded", isExpanded);
     button.onclick = () => {
-        selectedSource = source;
-        expandedKey = isExpanded ? null : key;
-        answerCard.classList.remove("answer-card--highlight");
-        renderCitations(sources);
+      selectedSource = source;
+      expandedKey = isExpanded ? null : key;
+      answerCard.classList.remove("answer-card--highlight");
+      renderCitations(sources);
     };
 
     const metaDiv = document.createElement("div");
@@ -136,7 +137,7 @@ function renderCitations(sources) {
 
     const titleSpan = document.createElement("span");
     titleSpan.className = "citation-title";
-    
+
     // Title logic
     const titleParts = [];
     const bookTitle = source.book_title?.trim();
@@ -145,7 +146,7 @@ function renderCitations(sources) {
 
     if (bookTitle) titleParts.push(bookTitle);
     if (cleanedChapter && !hideChapter && cleanedChapter !== bookTitle && !titleParts.includes(cleanedChapter)) {
-        titleParts.push(cleanedChapter);
+      titleParts.push(cleanedChapter);
     }
     const titleText = titleParts.length > 0 ? titleParts.join(" – ") : source.label;
     titleSpan.textContent = titleText;
@@ -153,10 +154,10 @@ function renderCitations(sources) {
     metaDiv.appendChild(titleSpan);
 
     if (source.page_number) {
-        const pageSpan = document.createElement("span");
-        pageSpan.className = "citation-page";
-        pageSpan.textContent = `P.${source.page_number}`;
-        metaDiv.appendChild(pageSpan);
+      const pageSpan = document.createElement("span");
+      pageSpan.className = "citation-page";
+      pageSpan.textContent = `P.${source.page_number}`;
+      metaDiv.appendChild(pageSpan);
     }
 
     button.appendChild(metaDiv);
@@ -169,10 +170,10 @@ function renderCitations(sources) {
     article.appendChild(button);
 
     if (isExpanded) {
-        const snippetDiv = document.createElement("div");
-        snippetDiv.className = "snippet";
-        snippetDiv.textContent = source.text;
-        article.appendChild(snippetDiv);
+      const snippetDiv = document.createElement("div");
+      snippetDiv.className = "snippet";
+      snippetDiv.textContent = source.text;
+      article.appendChild(snippetDiv);
     }
 
     citationListContainer.appendChild(article);
@@ -180,5 +181,5 @@ function renderCitations(sources) {
 }
 
 answerCard.addEventListener("click", () => {
-    answerCard.classList.remove("answer-card--highlight");
+  answerCard.classList.remove("answer-card--highlight");
 });

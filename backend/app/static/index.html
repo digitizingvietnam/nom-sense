@@ -1,79 +1,75 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nom-sense</title>
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <div class="app-wrapper">
-      <div class="cloud-layer" aria-hidden="true">
-        <span class="cloud cloud-1"></span>
-        <span class="cloud cloud-2"></span>
-      </div>
-      <div class="app-shell">
-        <section class="hero-card">
-          <h1 class="hero-title">Nom-sense</h1>
-          <p class="hero-subtitle">
-            Hỏi đáp với Gs. Nguyễn Quang Hồng về chữ Nôm.
-          </p>
-        </section>
 
-        <section class="panel">
-          <div>
-            <label for="question">Câu hỏi</label>
-            <textarea
-              id="question"
-              placeholder="Ví dụ: Ai là người đầu tiên được cho là làm thơ Nôm?"
-            >Before Nôm script, did Vietnamese people have their own writing system like Nôm?</textarea>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nom-sense</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
 
-          <button type="button" id="submit-button" class="primary-button">
-            <span aria-hidden="true" class="button-icon"></span>
-            <span id="button-text">Đặt câu hỏi</span>
-          </button>
-
-          <div
-            id="loading-indicator"
-            class="loading-indicator"
-            role="status"
-            aria-live="polite"
-            style="display: none"
-          >
-            <span class="spinner" aria-hidden="true"></span>
-            <span>Chờ Gs. Nguyễn Quang Hồng giải đáp…</span>
-          </div>
-
-          <p id="error-text" class="error-text" style="display: none"></p>
-
-          <div id="answer-container" style="display: none">
-            <div id="answer-card" class="answer-card">
-              <h2>Kết quả</h2>
-              <div id="answer-text" class="answer-text"></div>
-              <div id="citation-list-container" class="citation-list"></div>
-            </div>
-          </div>
-        </section>
-
-        <footer class="site-footer">
-          <p class="footer-line">
-            Tư liệu trích từ Khái luận Văn tự học chữ Nôm, Nguyễn Quang Hồng,
-            NXB Giáo dục, 2008 & Ngôn ngữ. Văn tự. Ngữ văn, Nguyễn Quang Hồng,
-            NXB Khoa học Xã hội, 2018 .
-          </p>
-          <p class="footer-line">
-            Source: An Introduction to the Study of Nôm Script (Khái luận Văn tự
-            học chữ Nôm), Nguyễn Quang Hồng, Education Publishing House, 2008,
-            and Language. Script. Literature (Ngôn ngữ. Văn tự. Ngữ văn), Nguyễn
-            Quang Hồng, Social Sciences Publishing House, 2018.
-          </p>
-          <span class="footer-divider" aria-hidden="true"></span>
-          <p class="footer-line">© 2025 Digitizing Việt Nam</p>
-        </footer>
-      </div>
+<body>
+  <div class="app-wrapper">
+    <div class="cloud-layer" aria-hidden="true">
+      <span class="cloud cloud-1"></span>
+      <span class="cloud cloud-2"></span>
     </div>
-    <script src="/script.js"></script>
-  </body>
+    <div class="app-shell">
+      <section class="hero-card">
+        <h1 class="hero-title">Nom-sense</h1>
+        <p class="hero-subtitle">
+          Hỏi đáp với Gs. Nguyễn Quang Hồng về chữ Nôm.
+        </p>
+      </section>
+
+      <section class="panel" aria-labelledby="question-heading">
+        <h2 id="question-heading" class="sr-only">Đặt câu hỏi</h2>
+        <div>
+          <label for="question">Câu hỏi</label>
+          <textarea id="question"
+            placeholder="Ví dụ: Ai là người đầu tiên được cho là làm thơ Nôm?">Before Nôm script, did Vietnamese people have their own writing system like Nôm?</textarea>
+        </div>
+
+        <button type="button" id="submit-button" class="primary-button">
+          <span aria-hidden="true" class="button-icon"></span>
+          <span id="button-text">Đặt câu hỏi</span>
+        </button>
+
+        <div id="loading-indicator" class="loading-indicator" role="status" aria-live="polite" style="display: none">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Chờ Gs. Nguyễn Quang Hồng giải đáp…</span>
+        </div>
+
+        <p id="error-text" class="error-text" role="alert" aria-live="assertive" style="display: none"></p>
+
+        <div id="answer-container" style="display: none">
+          <div id="answer-card" class="answer-card">
+            <h2>Kết quả</h2>
+            <div id="answer-text" class="answer-text"></div>
+            <div id="citation-list-container" class="citation-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p class="footer-line">
+          Tư liệu trích từ Khái luận Văn tự học chữ Nôm, Nguyễn Quang Hồng,
+          NXB Giáo dục, 2008 & Ngôn ngữ. Văn tự. Ngữ văn, Nguyễn Quang Hồng,
+          NXB Khoa học Xã hội, 2018 .
+        </p>
+        <p class="footer-line">
+          Source: An Introduction to the Study of Nôm Script (Khái luận Văn tự
+          học chữ Nôm), Nguyễn Quang Hồng, Education Publishing House, 2008,
+          and Language. Script. Literature (Ngôn ngữ. Văn tự. Ngữ văn), Nguyễn
+          Quang Hồng, Social Sciences Publishing House, 2018.
+        </p>
+        <span class="footer-divider" aria-hidden="true"></span>
+        <p class="footer-line">© 2026 Digitizing Việt Nam</p>
+      </footer>
+    </div>
+  </div>
+  <script src="/script.js"></script>
+</body>
+
 </html>
