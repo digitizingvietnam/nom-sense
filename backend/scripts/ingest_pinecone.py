@@ -147,7 +147,10 @@ def load_documents(data_dir: Path, extensions: Sequence[str]) -> List[Document]:
             else:
                 doc_meta["citation_label"] = f"{book_title} – {chapter_label}"
 
-            doc.metadata.update(doc_meta)
+            allowed_keys = ["book_title", "page_number", "author", "chapter", "file_name", "source", "citation_label"]
+
+            doc.metadata = {k: v for k, v in doc_meta.items() if k in allowed_keys}
+
             documents.append(doc)
 
     return documents
