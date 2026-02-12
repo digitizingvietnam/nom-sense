@@ -4,11 +4,12 @@ Exposes endpoints for health checks and RAG-based Q&A.
 """
 from __future__ import annotations
 
+
 import logging
 import os
 from pathlib import Path
 from time import perf_counter
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
@@ -17,13 +18,16 @@ import psutil
 # Import internal modules
 # Note: In Flask, dependencies are typically initialized globally or via a factory pattern.
 # Global instances are maintained here for simplicity and parity with the previous setup.
-from .rag.pipeline import RagService
 from .schemas import AskRequest, AskResponse
 from .settings import get_settings
+
+if TYPE_CHECKING:
+    from .rag.pipeline import RagService
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s - %(message)s")
 LOGGER = logging.getLogger(__name__)
+
 
 # Initialize Settings
 settings = get_settings()
@@ -34,17 +38,28 @@ app = Flask(__name__, static_folder="static", static_url_path="/")
 # Setup CORS
 CORS(app, resources={r"/*": {"origins": settings.allowed_origins or "*"}})
 
-# Initialize RAG Service (Lazy loading or Startup)
-# Initialize immediately to fail fast if configuration is invalid.
-try:
-    rag_service = RagService(settings)
-    # Check connection/index validity if needed
-    if settings.auto_ingest_on_startup:
-        LOGGER.info("Auto-ingesting on startup...")
-        rag_service.ensure_vectorstore(force_rebuild=False)
-except Exception as e:
-    LOGGER.error(f"Failed to initialize RAG service: {e}")
-    # Do not exit; allow /health checks to pass, though /ask will fail.
+
+# Global variable for lazy loading
+_rag_service = None
+
+def get_rag_service():
+    global _rag_service
+    if _rag_service is None:
+        try:
+            from .rag.pipeline import RagService
+            LOGGER.info("Initializing RAG Service (Lazy)...")
+            service = RagService(settings)
+            
+            # Check connection/index validity if needed
+            if settings.auto_ingest_on_startup:
+                LOGGER.info("Auto-ingesting on startup...")
+                service.ensure_vectorstore(force_rebuild=False)
+                
+            _rag_service = service
+        except Exception as e:
+            LOGGER.error(f"Failed to initialize RAG service: {e}")
+            raise e
+    return _rag_service
 
 
 def _gpu_snapshot() -> Optional[dict[str, float | str]]:
@@ -92,15 +107,21 @@ def ask_endpoint():
     cpu_before = proc.cpu_times()
     mem_before = proc.memory_info()
 
+    # Get RAG Service (Lazy)
+    try:
+        rag_service_instance = get_rag_service()
+    except Exception:
+        return jsonify({"detail": "Service initialization failed"}), 500
+
     # Check GPU if used (unlikely with Pinecone Inference, but good to keep)
-    device = getattr(rag_service, "device", None)
+    device = getattr(rag_service_instance, "device", None)
     gpu_before = _gpu_snapshot() if device == "cuda" else None
 
     start_ts = perf_counter()
 
     # 3. Call RAG Service
     try:
-        result = rag_service.ask(
+        result = rag_service_instance.ask(
             question=payload.question,
             additional_context=payload.additional_context,
             top_k=payload.top_k,
