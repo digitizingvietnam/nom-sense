@@ -69,8 +69,7 @@ body {
   position: absolute;
   width: 520px;
   height: 520px;
-  background: url("/background_assets/28790f1e59cd1b26c374f1100010a1d7ecba27c0.png")
-    no-repeat center/contain;
+  background: url("/assets/background.png") no-repeat center/contain;
   opacity: 1;
   filter: brightness(0) drop-shadow(0 16px 32px rgba(0, 0, 0, 0.14));
 }
@@ -79,12 +78,9 @@ body {
   top: 20px;
   left: -190px;
   --parallax-factor: -0.1;
-  transform: translate3d(
-      0,
+  transform: translate3d(0,
       calc(var(--scroll-y, 0px) * var(--parallax-factor, 0)),
-      0
-    )
-    rotate(-1deg) scaleX(-1) scale(1.1);
+      0) rotate(-1deg) scaleX(-1) scale(1.1);
   transform-origin: center;
 }
 
@@ -92,12 +88,9 @@ body {
   top: -120px;
   right: -80px;
   --parallax-factor: -0.06;
-  transform: translate3d(
-      0,
+  transform: translate3d(0,
       calc(var(--scroll-y, 0px) * var(--parallax-factor, 0)),
-      0
-    )
-    rotate(2deg) scale(1.2);
+      0) rotate(2deg) scale(1.2);
 }
 
 .app-shell {
@@ -356,7 +349,7 @@ button {
   gap: 0.9rem;
 }
 
-.citation-list > strong {
+.citation-list>strong {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.95rem;

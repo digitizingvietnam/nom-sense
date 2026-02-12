@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 settings = get_settings()
 
 # Initialize Flask App
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/")
 
 # Setup CORS
 CORS(app, resources={r"/*": {"origins": settings.allowed_origins or "*"}})
@@ -71,7 +71,7 @@ def health():
 
 @app.route("/", methods=["GET"])
 def root():
-    return jsonify({"status": "ok"})
+    return send_from_directory("static", "index.html")
 
 
 @app.route("/ask", methods=["POST"])
