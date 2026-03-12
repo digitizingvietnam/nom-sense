@@ -113,7 +113,6 @@ def ask_endpoint():
     except Exception:
         return jsonify({"detail": "Service initialization failed"}), 500
 
-    # Check GPU if used (unlikely with Pinecone Inference, but good to keep)
     device = getattr(rag_service_instance, "device", None)
     gpu_before = _gpu_snapshot() if device == "cuda" else None
 

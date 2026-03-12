@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     data_dir: Path = Field(Path("Word"), alias="DATA_DIR")
 
     # Pinecone Models (Serverless Inference)
-    pinecone_embedding_model: str = Field("multilingual-e5-large", alias="PINECONE_EMBEDDING_MODEL")
+    pinecone_embedding_model: str = Field("text-embedding-3-large", alias="PINECONE_EMBEDDING_MODEL")
     pinecone_rerank_model: str = Field("bge-reranker-v2-m3", alias="PINECONE_RERANK_MODEL")
     pinecone_namespace: str = Field("nom_sense", alias="PINECONE_NAMESPACE")
 

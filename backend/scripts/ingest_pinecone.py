@@ -17,10 +17,11 @@ try:
     from dotenv import load_dotenv
     from langchain_community.document_loaders import PyMuPDFLoader
     from langchain_core.documents import Document
-    from langchain_pinecone import PineconeVectorStore, PineconeEmbeddings
+    from langchain_openai import OpenAIEmbeddings
+    from langchain_pinecone import PineconeVectorStore
     from langchain_text_splitters import RecursiveCharacterTextSplitter
     from pinecone import Pinecone
-    from pydantic import Field
+    from pydantic import Field, field_validator
     from pydantic_settings import BaseSettings, SettingsConfigDict
 except ImportError as e:
     print(f"Error: Missing required packages. Please install: {e}")
@@ -41,9 +42,10 @@ DEFAULT_AUTHOR = "Nguyen Quang Hong"
 # --- Minimal Settings Class ---
 class IngestSettings(BaseSettings):
     """Minimal configuration for ingestion."""
+    openai_api_key: str = Field(..., alias="OPENAI_API_KEY")
     pinecone_api_key: str = Field(..., alias="PINECONE_API_KEY")
     pinecone_index_name: str = Field(..., alias="PINECONE_INDEX_NAME")
-    pinecone_embedding_model: str = Field("multilingual-e5-large", alias="PINECONE_EMBEDDING_MODEL")
+    pinecone_embedding_model: str = Field("text-embedding-3-large", alias="PINECONE_EMBEDDING_MODEL")
     pinecone_namespace: str = Field("nom_sense", alias="PINECONE_NAMESPACE")
 
     # Defaults
@@ -57,6 +59,13 @@ class IngestSettings(BaseSettings):
         case_sensitive=False,
         extra="ignore"
     )
+
+    @field_validator("openai_api_key", "pinecone_api_key", mode="before")
+    @classmethod
+    def _strip_quotes(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return v.strip("'\" \t\n\r")
+        return v
 
     @property
     def resolved_data_dir(self) -> Path:
@@ -163,6 +172,9 @@ def main():
 
     try:
         settings = IngestSettings()
+        # Explicitly sync to os.environ for sub-libraries that check it
+        os.environ["OPENAI_API_KEY"] = settings.openai_api_key
+        os.environ["PINECONE_API_KEY"] = settings.pinecone_api_key
     except Exception as e:
         LOGGER.error(f"Configuration Error: {e}")
         LOGGER.info("Make sure you have a .env file with PINECONE_API_KEY and PINECONE_INDEX_NAME")
@@ -192,9 +204,9 @@ def main():
 
     # 3. Setup Pinecone
     try:
-        embeddings = PineconeEmbeddings(
+        embeddings = OpenAIEmbeddings(
             model=settings.pinecone_embedding_model,
-            pinecone_api_key=settings.pinecone_api_key
+            openai_api_key=settings.openai_api_key
         )
 
         vectorstore = PineconeVectorStore(

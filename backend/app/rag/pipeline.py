@@ -10,11 +10,10 @@ import re
 from typing import Dict, Iterable, List, Optional, Sequence, Any
 from urllib.parse import quote, quote_plus
 
-from langchain_pinecone import PineconeVectorStore, PineconeEmbeddings
-from pinecone import Pinecone
-from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from pinecone import Pinecone
+from langchain_pinecone import PineconeVectorStore
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 
@@ -147,10 +146,10 @@ class RagService:
 
         LOGGER.info("Initializing Pinecone RAG Service...")
 
-        # Pinecone Embeddings (Serverless Inference)
-        self.embeddings = PineconeEmbeddings(
+        # OpenAI Embeddings
+        self.embeddings = OpenAIEmbeddings(
             model=settings.pinecone_embedding_model,
-            pinecone_api_key=settings.pinecone_api_key
+            openai_api_key=settings.openai_api_key
         )
 
         # Pinecone Client for Reranking and ID generation
